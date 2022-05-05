@@ -3,4 +3,5 @@ scipy
 pandas
 jupyter
 jupyterlab
+ipywidgets
 torch
