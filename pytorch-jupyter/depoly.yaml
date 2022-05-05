@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pytorch-dev
+  labels:
+    app: pytorch-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pytorch-dev
+  template:
+    metadata:
+      labels:
+        app: pytorch-dev
+    spec:
+      containers:
+        - name: pytorch-dev
+          image: chenchaoclarifai/research-pytorch:v1
+          ports:
+            - containerPort: 8003
+            - containerPort: 8005
+          command:  # This cmd keeps the container up forever.
+            - /bin/bash
+            - -lc
+            #- "sudo ldconfig; trap : TERM INT; sleep infinity & wait"
+            - "jupyter lab --ip 0.0.0.0 --port 8003 --allow-root --NotebookApp.token='' --NotebookApp.password='' "
+          resources:
+            limits:
+              cpu: 3000m
+              memory: 32Gi
+              nvidia.com/gpu: 1
+            requests:
+              cpu: 3000m
+              memory: 16Gi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - mountPath: /home/chenchaozhao
+              name: homedir
+            - name: mnt-scratch-1
+              mountPath: /home/scratch/1
+              readOnly: false
+            - name: mnt-scratch-2
+              mountPath: /home/scratch/2
+              readOnly: false
+            - mountPath: /dev/shm # needed to allocate shm for pytorch
+              name: dshm
+      volumes:
+        - name: homedir
+          hostPath:
+            path: /home/chenchaozhao
+        - name: mnt-scratch-1
+          hostPath:
+            path: /mnt/nfs/scratch/1
+        - name: mnt-scratch-2
+          hostPath:
+            path: /mnt/nfs/scratch/2
+        - name: dshm # this is needed to allocate shm for pytorch
+          emptyDir:
+            medium: Memory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter
+spec:
+  type: NodePort
+  selector:
+    app: pytorch-dev
+  ports:
+    - name: jupyter
+      targetPort: 8003
+      port: 8003
+      nodePort: 30083
+    - name: custom-svc
+      targetPort: 8005
+      port: 8005
+      # nodePort: 30885
