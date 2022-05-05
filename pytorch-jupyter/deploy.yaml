@@ -33,7 +33,7 @@ spec:
               nvidia.com/gpu: 1
             requests:
               cpu: 8
-              memory: 16Gi
+              memory: 32Gi
               nvidia.com/gpu: 1
           volumeMounts:
             - mountPath: /home/chenchaozhao
