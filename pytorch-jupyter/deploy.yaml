@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: pytorch-dev
-          image: chenchaoclarifai/research-pytorch:torch1.11
+          image: chenchaoclarifai/research-pytorch:v1
           ports:
             - containerPort: 8003
             - containerPort: 8005
