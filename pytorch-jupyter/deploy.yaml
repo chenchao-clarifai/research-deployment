@@ -28,11 +28,11 @@ spec:
             - "jupyter lab --ip 0.0.0.0 --port 8003 --allow-root --NotebookApp.token='' --NotebookApp.password='' "
           resources:
             limits:
-              cpu: 8000m
+              cpu: 10000m
               memory: 32Gi
               nvidia.com/gpu: 1
             requests:
-              cpu: 8000m
+              cpu: 10000m
               memory: 32Gi
               nvidia.com/gpu: 1
           volumeMounts:
@@ -44,6 +44,9 @@ spec:
             - name: mnt-scratch-2
               mountPath: /home/scratch/2
               readOnly: false
+            - name: mnt-scratch-3
+              mountPath: /home/scratch/3
+              readOnly: false
             - mountPath: /dev/shm # needed to allocate shm for pytorch
               name: dshm
       volumes:
@@ -52,10 +55,13 @@ spec:
             path: /home/chenchaozhao
         - name: mnt-scratch-1
           hostPath:
-            path: /mnt/nfs/scratch/1
+            path: /mnt/scratch/1
         - name: mnt-scratch-2
           hostPath:
-            path: /mnt/nfs/scratch/2
+            path: /mnt/scratch/2
+        - name: mnt-scratch-3
+          hostPath:
+            path: /mnt/scratch/3
         - name: dshm # this is needed to allocate shm for pytorch
           emptyDir:
             medium: Memory
