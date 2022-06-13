@@ -28,11 +28,11 @@ spec:
             - "jupyter lab --ip 0.0.0.0 --port 8003 --allow-root --NotebookApp.token='' --NotebookApp.password='' "
           resources:
             limits:
-              cpu: 10000m
+              cpu: 16000m
               memory: 32Gi
               nvidia.com/gpu: 1
             requests:
-              cpu: 10000m
+              cpu: 16000m
               memory: 32Gi
               nvidia.com/gpu: 1
           volumeMounts:
